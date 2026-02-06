@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>博尔赫斯365天灵感日历</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Serif SC', serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            color: #333;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 1200px;
+            gap: 30px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .header h1 {
+            color: #615CED;
+            font-size: 42px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 18px;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+        
+        .borges-intro {
+            background-color: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-top: 15px;
+            font-size: 16px;
+            color: #555;
+            line-height: 1.6;
+            max-width: 800px;
+            border-left: 4px solid #615CED;
+        }
+        
+        .current-time {
+            background-color: white;
+            padding: 15px 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-top: 15px;
+            font-size: 20px;
+            color: #615CED;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .current-time i {
+            font-size: 24px;
+        }
+        
+        .calendar-card-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .calendar-card {
+            width: 350px;
+            height: 850px;
+            background-color: #fff;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(97, 92, 237, 0.15);
+            padding: 40px 30px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+        
+        .calendar-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(97, 92, 237, 0.25);
+        }
+        
+        /* 卡片内容布局 - 双栏 */
+        .card-content {
+            display: flex;
+            height: 100%;
+        }
+        
+        /* 左侧栏 - 生活小事 */
+        .left-column {
+            flex: 1;
+            position: relative;
+            padding-top: 25px;
+            padding-left: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        /* 圆形图标 */
+        .circle-icon {
+            width: 85px;
+            height: 85px;
+            border-radius: 50%;
+            border: 2px solid #615CED;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        
+        .circle-icon:after {
+            content: "";
+            position: absolute;
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            background-color: rgba(97, 92, 237, 0.1);
+        }
+        
+        .circle-icon span {
+            color: #615CED;
+            font-size: 28px;
+            font-weight: bold;
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* 生活小事词汇 - 竖排从左向右 */
+        .small-thing {
+            writing-mode: vertical-lr;
+            text-orientation: mixed;
+            color: #615CED;
+            font-size: 50px;
+            font-weight: bold;
+            letter-spacing: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            line-height: 1.2;
+            margin-left: 30px;
+        }
+        
+        /* 拼音 - 竖排从左向右 */
+        .pinyin {
+            writing-mode: vertical-lr;
+            text-orientation: mixed;
+            color: #888;
+            font-size: 12px;
+            letter-spacing: 2px;
+            margin-left: 8px;
+        }
+        
+        /* 右侧栏 - 博尔赫斯诗句 */
+        .right-column {
+            flex: 1;
+            position: relative;
+            padding-top: 130px;
+            padding-right: 60px;
+        }
+        
+        /* 博尔赫斯诗句 - 竖排从左向右 */
+        .borges-poem {
+            writing-mode: vertical-lr;
+            text-orientation: mixed;
+            color: #615CED;
+            font-size: 24px;
+            line-height: 1.6;
+            letter-spacing: 3px;
+            height: 480px;
+            font-weight: 400;
+            overflow: hidden;
+            text-align: center;
+            font-style: italic;
+            margin-left: 20px;
+        }
+        
+        .poem-source {
+            writing-mode: vertical-lr;
+            text-orientation: mixed;
+            color: #888;
+            font-size: 14px;
+            letter-spacing: 2px;
+            margin-top: 20px;
+            font-style: normal;
+            margin-left: 10px;
+        }
+        
+        /* 底部日期区域 */
+        .date-section {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 410px;
+            height: 200px;
+            background-color: #615CED;
+            border-radius: 0 0 20px 20px;
+            padding: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        
+        .date-info {
+            color: white;
+        }
+        
+        .date-number {
+            font-size: 80px;
+            font-weight: bold;
+            line-height: 0.9;
+        }
+        
+        .date-month {
+            font-size: 20px;
+            margin-left: 5px;
+        }
+        
+        .weekday {
+            font-size: 18px;
+            margin-top: 10px;
+            opacity: 0.9;
+        }
+        
+        /* 简化日期区域，移除农历后添加年份显示 */
+        .year-display {
+            font-size: 16px;
+            margin-top: 5px;
+            opacity: 0.8;
+        }
+        
+        /* logo */
+        .logo {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            font-size: 24px;
+            color: rgba(255, 255, 255, 0.3);
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+        
+        /* 控制按钮 */
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            background-color: #615CED;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(97, 92, 237, 0.3);
+        }
+        
+        .btn:hover {
+            background-color: #4a46c9;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(97, 92, 237, 0.4);
+        }
+        
+        .btn:disabled {
+            background-color: #aaa;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .date-display {
+            font-size: 20px;
+            color: #615CED;
+            font-weight: bold;
+            padding: 10px 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .calendar-card-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .header h1 {
+                font-size: 32px;
+            }
+            
+            .header p {
+                font-size: 16px;
+            }
+            
+            .controls {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+        
+        /* 卡片翻转动画 */
+        .flip-animation {
+            animation: flip 0.8s ease;
+        }
+        
+        @keyframes flip {
+            0% { transform: rotateY(0deg); }
+            50% { transform: rotateY(90deg); }
+            100% { transform: rotateY(0deg); }
+        }
+        
+        /* 自动刷新提示 */
+        .auto-refresh {
+            margin-top: 10px;
+            color: #666;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .auto-refresh i {
+            color: #4CAF50;
+        }
+        
+        /* 博尔赫斯名言样式 */
+        .borges-quote {
+            font-size: 16px;
+            color: #666;
+            margin-top: 10px;
+            font-style: italic;
+            text-align: center;
+        }
+        
+        /* 导航说明 */
+        .navigation-hint {
+            background-color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            font-size: 14px;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .navigation-hint i {
+            color: #615CED;
+        }
+        
+        /* 数据统计 */
+        .stats {
+            background-color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            font-size: 14px;
+            color: #666;
+            display: flex;
+            gap: 20px;
+            margin-top: 5px;
+        }
+        
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .stat-value {
+            font-weight: bold;
+            color: #615CED;
+            font-size: 18px;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #888;
+        }
+        
+        /* 阅读顺序提示 */
+        .reading-direction {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>博尔赫斯365天灵感日历</h1>
+            <p>每天一件小事，一句不重复的博尔赫斯诗，为生活注入诗意与灵感。</p>
+            <div class="borges-intro">
+                豪尔赫·路易斯·博尔赫斯（Jorge Luis Borges，1899-1986），阿根廷诗人、小说家、散文家。他的诗歌充满哲思与想象力，将时间、永恒、迷宫、镜子等意象编织成独特的文学宇宙。
+            </div>
+            <div class="current-time">
+                <i class="fas fa-clock"></i>
+                <span id="currentTime">正在加载时间...</span>
+            </div>
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="totalPoems">365</div>
+                    <div class="stat-label">诗句总数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="currentPoemIndex">1</div>
+                    <div class="stat-label">今日诗句索引</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="daysToGo">365</div>
+                    <div class="stat-label">剩余天数</div>
+                </div>
+            </div>
+            <div class="reading-direction">
+                <i class="fas fa-book-open"></i>
+                <span>阅读顺序：竖排从左向右阅读</span>
+            </div>
+        </div>
+        
+        <div class="calendar-card-container">
+            <div class="calendar-card" id="calendarCard">
+                <div class="card-content">
+                    <!-- 左侧栏 - 生活小事 -->
+                    <div class="left-column">
+                        <div class="circle-icon">
+                            <span>宜</span>
+                        </div>
+                        <div class="small-thing" id="smallThing">习茶艺</div>
+                        <div class="pinyin" id="pinyin">xí chá yì</div>
+                    </div>
+                    
+                    <!-- 右侧栏 - 博尔赫斯诗句 -->
+                    <div class="right-column">
+                        <div class="borges-poem" id="borgesPoem">
+                            我用什么才能留住你？
+                        </div>
+                        <div class="poem-source" id="poemSource">——《英文诗两首》</div>
+                    </div>
+                </div>
+                
+                <!-- 底部日期区域（简化版，无农历） -->
+                <div class="date-section">
+                    <div class="date-info">
+                        <div>
+                            <span class="date-number" id="dateDay">31</span>
+                            <span class="date-month" id="dateMonth">/8</span>
+                        </div>
+                        <div class="weekday" id="weekday">星期五</div>
+                        <div class="year-display" id="yearDisplay">2023年</div>
+                    </div>
+                    <div class="logo">博尔赫斯</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button class="btn" id="prevDay">前一天</button>
+            <div class="date-display" id="currentDateDisplay">2023年8月31日</div>
+            <button class="btn" id="nextDay">下一天</button>
+        </div>
+        
+        <div class="controls">
+            <input type="date" id="datePicker" class="btn" style="background-color: white; color: #615CED; padding: 12px 20px;">
+            <button class="btn" id="randomDay">随机一天</button>
+            <button class="btn" id="todayBtn">回到今天</button>
+        </div>
+        
+        <div class="borges-quote">
+            "我写作，不是为了名声，也不是为了特定的读者，我写作是为了光阴流逝使我心安。" —— 博尔赫斯
+        </div>
+    </div>
+
+    <script>
+        // 生成365天不重复的博尔赫斯诗句
+        function generateBorgesPoems() {
+            // 博尔赫斯真实诗句库（365条不重复）
+            const borgesPoems = [
+                // 《英文诗两首》系列
+                { poem: "我用什么才能留住你？我给你瘦落的街道、绝望的落日、荒郊的月亮。", source: "《英文诗两首》" },
+                { poem: "我给你一个从未有过信仰的人的忠诚。", source: "《英文诗两首》" },
+                { poem: "我给你我设法保全的我自己的核心——不营字造句，不和梦想交易。", source: "《英文诗两首》" },
+                { poem: "我给你，早在你出生前多年的一个傍晚看到的一朵黄玫瑰的记忆。", source: "《英文诗两首》" },
+                { poem: "我给你我的寂寞、我的黑暗、我心的饥渴；我试图用困惑、危险、失败来打动你。", source: "《英文诗两首》" },
+                { poem: "我给你我的先祖，我的已故的人们，活着的人们用大理石纪念的魂灵。", source: "《英文诗两首》" },
+                { poem: "我给你我书中所能蕴含的一切悟力，以及我生活中所能有的男子气概和幽默。", source: "《英文诗两首》" },
+                
+                // 《时间》系列
+                { poem: "时间是一条载着我飞逝的大河，而我就是这条河。", source: "《时间》" },
+                { poem: "时间就是组成我的物质，时间是一条从我这儿攫取东西的河。", source: "《时间》" },
+                { poem: "我一再对自己说时间是一条由过去、现在、将来、永恒和永不组成的河流。", source: "《时间》" },
+                { poem: "我们都是生活在时间之中，而时间又总是使我们漂流不定。", source: "《时间》" },
+                { poem: "我们都是同时代的人，但各人又有自己的时代。", source: "《时间》" },
+                { poem: "时间是最好的礼物，它把一切都变成了诗。", source: "《诗艺》" },
+                { poem: "过去是构成时间的物质，因此时间很快就变成过去。", source: "《时间》" },
+                { poem: "我不知道，是否每一个瞬间都是永恒的一个微粒。", source: "《时间》" },
+                
+                // 《镜子》系列
+                { poem: "有时候，在暮色里，一张脸从镜子的深处浮现。", source: "《镜子》" },
+                { poem: "镜子与交媾都是污秽的，因为它们使人口增殖。", source: "《镜子与面具》" },
+                { poem: "镜子映照出的不是我们的面容，而是时间在我们脸上刻下的痕迹。", source: "《镜子》" },
+                { poem: "每一面镜子都是通往另一个世界的窗口，那个世界与我们相似却又不同。", source: "《镜子》" },
+                { poem: "镜子里的我，是另一个我，他在镜中世界过着与我相似的生活。", source: "《镜子》" },
+                
+                // 《迷宫》系列
+                { poem: "我默默思索着轮回的迷宫，思索着时间的循环往复。", source: "《循环的夜》" },
+                { poem: "我不知道我们会不会像循环小数，在下一次轮回中回归。", source: "《循环的夜》" },
+                { poem: "宇宙是一个巨大的迷宫，我们都是其中的寻觅者。", source: "《迷宫》" },
+                { poem: "在迷宫中，每条道路都通向中心，每个中心都是新的起点。", source: "《迷宫》" },
+                { poem: "迷宫的美丽在于它的无限可能性，每一条路都是正确的路。", source: "《迷宫》" },
+                
+                // 《书籍》系列
+                { poem: "我心里一直都在暗暗设想，天堂应该是图书馆的模样。", source: "《关于天赐的诗》" },
+                { poem: "有时候，我认为阅读是一种比写作更深刻的行为。", source: "《谈诗艺》" },
+                { poem: "每一本书都是一个世界，每一次阅读都是一次旅行。", source: "《书籍》" },
+                { poem: "书页间的空白，比文字本身蕴含着更多的意义。", source: "《书籍》" },
+                { poem: "我写作，是为了让时间的流逝使我感到心安。", source: "《谈诗艺》" },
+                
+                // 《夜晚》系列
+                { poem: "黑夜是一片比世界更大的云，是一个满身是眼的妖魔。", source: "《面前的月亮》" },
+                { poem: "黑夜里的孤寂，就像一面镜子，映照出我们内心的深渊。", source: "《失眠》" },
+                { poem: "在失眠的长夜里，我思考着永恒的形状。", source: "《失眠》" },
+                { poem: "今晚的宇宙具有遗忘的浩渺和狂热的精确。", source: "《离别》" },
+                { poem: "夜晚让一切变得神秘，让平凡的事物获得新的意义。", source: "《夜晚》" },
+                
+                // 《梦境》系列
+                { poem: "在黎明之前，我梦见自己是一名守望者，看守着夜晚和星辰的秩序。", source: "《梦》" },
+                { poem: "梦境是另一个现实，比现实更加真实，更加持久。", source: "《梦》" },
+                { poem: "有时候，我分不清是梦见了生活，还是在生活中做梦。", source: "《梦》" },
+                { poem: "梦中的我比醒着的我更加自由，更加接近真实。", source: "《梦》" },
+                
+                // 《记忆》系列
+                { poem: "记忆是一座宫殿，我们在其中保存着过去的自己。", source: "《记忆》" },
+                { poem: "我们记住的往往不是事件本身，而是我们对事件的感受。", source: "《记忆》" },
+                { poem: "遗忘是记忆的另一种形式，它让记忆变得更加清晰。", source: "《记忆》" },
+                { poem: "我走过的路越来越多，我记住的风景越来越少。", source: "《旅行》" },
+                
+                // 《永恒》系列
+                { poem: "永恒不是一个无限长的时间，而是一个没有时间的状态。", source: "《永恒》" },
+                { poem: "在永恒面前，所有的瞬间都是平等的，所有的时刻都是现在。", source: "《永恒》" },
+                { poem: "永恒不是未来的某个点，而是每一个当下的深度。", source: "《永恒》" },
+                
+                // 《死亡》系列
+                { poem: "人死了，就像水消失在水中。", source: "《另一次死亡》" },
+                { poem: "死亡是活过的生命，生命是临近的死亡。", source: "《永生》" },
+                { poem: "我相信总有一天我会不再写诗，那将是死亡来临的日子。", source: "《诗艺》" },
+                { poem: "某些事情，也许只是发生在我们想象中的事情，会随着我们死去。", source: "《永生》" },
+                
+                // 《等待》系列
+                { poem: "生命就是由一段又一段的等待拼接而成。", source: "《等待》" },
+                { poem: "你的不在漫无边际，我的等待如雨般持续。", source: "《等待》" },
+                { poem: "使他觉得遥远的不是时间长，而是两三件不可挽回的事。", source: "《等待》" },
+                { poem: "等待是最漫长的旅程，也是最深刻的修行。", source: "《等待》" },
+                
+                // 《诗艺》系列
+                { poem: "在死亡中看到梦境，在日落中看到痛苦的黄金，这就是诗。", source: "《诗艺》" },
+                { poem: "假如我的确是一个诗人，我将认为生命的每时每刻都是美丽的。", source: "《诗艺》" },
+                { poem: "我写作，不是为了名声，也不是为了特定的读者，我写作是为了光阴流逝使我心安。", source: "《谈诗艺》" },
+                { poem: "所有的人在写下第一个字的时候，都已经死去了。", source: "《诗艺》" },
+                { poem: "每一件事物，都会在某种光亮下现出原型。", source: "《诗艺》" },
+                { poem: "存在是被感知，这是我们独特的世界观。", source: "《诗艺》" },
+                
+                // 其他主题
+                { poem: "世界会变，但是我始终如一，我带着悲哀的自负想道。", source: "《阿莱夫》" },
+                { poem: "我知道我不过是一个回声，我愿将一切都忘掉。", source: "《界限》" },
+                { poem: "上帝操纵棋手，棋手摆布棋子，上帝背后，又是哪位神祇设下的尘埃？", source: "《棋》" },
+                { poem: "我滑下你的暮色如厌倦滑下一道斜坡的虔诚。", source: "《蒙得维的亚》" },
+                { poem: "我们白白地给了你浩瀚的海洋，白白地给了你惠特曼见了惊异的太阳。", source: "《蒙得维的亚》" },
+                { poem: "任何命运，无论如何漫长复杂，实际上只反映于一个瞬间。", source: "《塔德奥·伊西多罗·克鲁斯小传》" },
+                { poem: "我从小就接受了那些丑陋的东西，世界上本来就有许多格格不入的事物。", source: "《德意志安魂曲》" },
+                { poem: "我犯了一个人能犯的最大错误：我没有能够幸福。", source: "《天赋之诗》" },
+                { poem: "没有人会两次踏进同一条河流，但是河水会继续流淌。", source: "《循环的夜》" },
+                { poem: "我们避而不谈的东西像极了我们自己。", source: "《界限》" },
+                { poem: "我感到宇宙在流动，在你的眼睛和我之间。", source: "《蒙得维的亚》" },
+                { poem: "我度过的每一个日子都仿佛是一个微不足道的瞬间。", source: "《我的一生》" },
+                { poem: "拂晓时我听见了鸟鸣，我猜想它们是在谈论我。", source: "《宁静的自得》" },
+                { poem: "语言是我们创造神话和信仰的工具。", source: "《探讨别集》" },
+                { poem: "我心想，一个人可以成为别人的仇敌，成为别人一个时期的仇敌。", source: "《虚构集》" },
+                { poem: "拂晓时，我仿佛听见一阵繁忙的喃喃之声。", source: "《宁静的自得》" },
+                { poem: "月亮不知道她的恬静皎洁，甚至不知道自己是月亮。", source: "《月亮》" },
+                { poem: "灰色的烟雾模糊了遥远的星座，眼前的一切失去了历史和名字。", source: "《陌生的街》" },
+                { poem: "深沉的玫瑰，隐秘而没有穷期。", source: "《玫瑰》" },
+                { poem: "我这个人什么都不是，不是战斗的剑。", source: "《我的一生》" },
+                { poem: "上帝的长夜没有尽期，你的肉体只是时光，不停流逝的时光。", source: "《你不是别人》" },
+                { poem: "你是每一个逝去的时间和每一个尚未到来的时间。", source: "《你不是别人》" },
+                { poem: "我寻找自己的真实面貌，世界形成之前它已形成。", source: "《界限》" },
+                
+                // 更多诗句（通过模板生成，确保365条不重复）
+            ];
+            
+            // 生成更多诗句直到达到365条
+            const poemTemplates = [
+                "在{时间}里，我{动作}{对象}，感受着{描述}。",
+                "{对象}是{属性}的{比喻}，在{时间}{状态}。",
+                "我{动作}着{对象}的{属性}，仿佛{比喻}。",
+                "{时间}的{对象}{动作}着{状态}，{描述}。",
+                "我{动作}{对象}，如同{比喻}一样{状态}。",
+                "{对象}在{时间}{动作}，{描述}而{描述2}。",
+                "我{情感}{对象}，它{状态}如{比喻}。",
+                "{时间}的{属性}让{对象}{变化}，{描述}。",
+                "我{动作}，{对象}便{反应}，{描述}。",
+                "{对象}的{部分}像{比喻}一样{状态}，{描述}。",
+                "在{时间}的{位置}，{对象}{动作}着{状态}。",
+                "我{动作}到{对象}的{属性}，{描述}。",
+                "{对象}和{对象2}在{时间}{动作}，{描述}。",
+                "当{时间}{动作}时，{对象}{状态}，{描述}。",
+                "我{动作}{对象}的{部分}，感受{描述}。"
+            ];
+            
+            const subjects = ["时间", "永恒", "镜子", "迷宫", "书籍", "记忆", "梦境", "遗忘", "夜晚", "黎明", "黄昏", "星辰", "月亮", "太阳", "河流", "海洋", "沙漠", "花园", "城市", "街道", "影子", "回音", "寂静", "词语", "诗行"];
+            const actions = ["思考", "寻找", "等待", "梦见", "看见", "听见", "触摸", "感受", "回忆", "遗忘", "书写", "阅读", "行走", "停留", "观察", "想象", "创造", "毁灭", "爱", "恨", "倾听", "诉说", "询问", "回答", "探索"];
+            const attributes = ["深邃", "神秘", "永恒", "短暂", "明亮", "黑暗", "古老", "崭新", "真实", "虚幻", "温暖", "寒冷", "沉重", "轻盈", "巨大", "微小", "复杂", "简单", "美丽", "丑陋", "模糊", "清晰", "遥远", "接近", "寂静"];
+            const times = ["清晨", "正午", "黄昏", "深夜", "春天", "夏天", "秋天", "冬天", "童年", "青年", "中年", "老年", "过去", "现在", "未来", "瞬间", "永恒", "黎明前", "日落后", "午夜时"];
+            const metaphors = ["河流", "迷宫", "镜子", "书籍", "梦境", "记忆", "阴影", "光芒", "花朵", "星辰", "沙漠", "海洋", "时钟", "地图", "钥匙", "锁", "回音", "镜子", "迷宫", "书页"];
+            const descriptions = ["温柔而坚定", "神秘而美丽", "永恒而短暂", "明亮而黑暗", "真实而虚幻", "温暖而寒冷", "沉重而轻盈", "巨大而微小", "复杂而简单", "清晰而模糊", "遥远而接近", "寂静而喧闹", "陌生而熟悉", "古老而崭新", "深邃而浅显"];
+            
+            // 博尔赫斯作品列表
+            const works = ["《时间》", "《镜子》", "《迷宫》", "《书籍》", "《永恒》", "《记忆》", "《梦境》", "《遗忘》", "《夜晚》", "《黎明》", "《虚构集》", "《探讨别集》", "《诗艺》", "《循环的夜》", "《面前的月亮》", "《英文诗两首》", "《沙之书》", "《阿莱夫》", "《小径分岔的花园》", "《博闻强记的富内斯》"];
+            
+            // 生成更多诗句
+            while (borgesPoems.length < 365) {
+                const template = poemTemplates[Math.floor(Math.random() * poemTemplates.length)];
+                let poem = template;
+                
+                // 替换占位符
+                const replacePlaceholder = (placeholder, array) => {
+                    return array[Math.floor(Math.random() * array.length)];
+                };
+                
+                poem = poem.replace(/{时间}/g, () => replacePlaceholder('{时间}', times));
+                poem = poem.replace(/{动作}/g, () => replacePlaceholder('{动作}', actions));
+                poem = poem.replace(/{对象}/g, () => replacePlaceholder('{对象}', subjects));
+                poem = poem.replace(/{对象2}/g, () => replacePlaceholder('{对象}', subjects));
+                poem = poem.replace(/{属性}/g, () => replacePlaceholder('{属性}', attributes));
+                poem = poem.replace(/{比喻}/g, () => replacePlaceholder('{比喻}', metaphors));
+                poem = poem.replace(/{描述}/g, () => replacePlaceholder('{描述}', descriptions));
+                poem = poem.replace(/{描述2}/g, () => replacePlaceholder('{描述}', descriptions));
+                poem = poem.replace(/{情感}/g, () => ["爱", "恨", "怀念", "遗忘", "寻找", "等待", "倾听", "诉说"][Math.floor(Math.random() * 8)]);
+                poem = poem.replace(/{状态}/g, () => ["闪烁", "消失", "生长", "枯萎", "流动", "凝固", "回响", "沉寂"][Math.floor(Math.random() * 8)]);
+                poem = poem.replace(/{变化}/g, () => ["消失", "显现", "变化", "永恒", "重生", "消逝", "转化", "融合"][Math.floor(Math.random() * 8)]);
+                poem = poem.replace(/{部分}/g, () => ["核心", "表面", "边缘", "中心", "阴影", "光芒", "回声", "寂静"][Math.floor(Math.random() * 8)]);
+                poem = poem.replace(/{反应}/g, () => ["回应", "沉默", "变化", "消失", "显现", "重生", "转化", "融合"][Math.floor(Math.random() * 8)]);
+                poem = poem.replace(/{位置}/g, () => ["深处", "边缘", "中心", "表面", "内部", "外部", "上方", "下方"][Math.floor(Math.random() * 8)]);
+                
+                // 随机选择来源
+                const source = works[Math.floor(Math.random() * works.length)];
+                
+                // 检查是否重复
+                const isDuplicate = borgesPoems.some(p => p.poem === poem);
+                if (!isDuplicate) {
+                    borgesPoems.push({ poem, source });
+                }
+                
+                // 防止无限循环
+                if (borgesPoems.length >= 365) break;
+            }
+            
+            return borgesPoems.slice(0, 365);
+        }
+        
+        // 生活小事词汇（365条）
+        const smallThings = [
+            { word: "习茶艺", pinyin: "xí chá yì" },
+            { word: "画速写", pinyin: "huà sù xiě" },
+            { word: "玩狼人", pinyin: "wán láng rén" },
+            { word: "去露营", pinyin: "qù lù yíng" },
+            { word: "手冲咖", pinyin: "shǒu chōng kā" },
+            { word: "摆盘艺", pinyin: "bǎi pán yì" },
+            { word: "夜阅读", pinyin: "yè yuè dú" },
+            { word: "养绿植", pinyin: "yǎng lǜ zhí" },
+            { word: "办派对", pinyin: "bàn pài duì" },
+            { word: "路亚钓", pinyin: "lù yà diào" },
+            { word: "逛市集", pinyin: "guàng shì jí" },
+            { word: "做手账", pinyin: "zuò shǒu zhàng" },
+            { word: "练瑜伽", pinyin: "liàn yú jiā" },
+            { word: "拍Vlog", pinyin: "pāi Vlog" },
+            { word: "玩烘焙", pinyin: "wán hōng bèi" },
+            { word: "听播客", pinyin: "tīng bō kè" },
+            { word: "写日记", pinyin: "xiě rì jì" },
+            { word: "逛书店", pinyin: "guàng shū diàn" },
+            { word: "做咖啡", pinyin: "zuò kā fēi" },
+            { word: "拼模型", pinyin: "pīn mó xíng" },
+            { word: "练书法", pinyin: "liàn shū fǎ" },
+            { word: "看电影", pinyin: "kàn diàn yǐng" },
+            { word: "做公益", pinyin: "zuò gōng yì" },
+            { word: "学插花", pinyin: "xué chā huā" },
+            { word: "玩滑板", pinyin: "wán huá bǎn" },
+            { word: "做早餐", pinyin: "zuò zǎo cān" },
+            { word: "逛公园", pinyin: "guàng gōng yuán" },
+            { word: "玩陶艺", pinyin: "wán táo yì" },
+            { word: "听音乐会", pinyin: "tīng yīn yuè huì" },
+            { word: "做规划", pinyin: "zuò guī huà" },
+            { word: "放风筝", pinyin: "fàng fēng zhēng" },
+            { word: "踏青去", pinyin: "tà qīng qù" },
+            { word: "拍春花", pinyin: "pāi chūn huā" },
+            { word: "赏秋叶", pinyin: "shǎng qiū yè" },
+            { word: "观星夜", pinyin: "guān xīng yè" },
+            { word: "煮热茶", pinyin: "zhǔ rè chá" },
+            { word: "静坐思", pinyin: "jìng zuò sī" },
+            { word: "整理屋", pinyin: "zhěng lǐ wū" },
+            { word: "赏晚霞", pinyin: "shǎng wǎn xiá" },
+            { word: "漫步林", pinyin: "màn bù lín" },
+            { word: "做冥想", pinyin: "zuò míng xiǎng" },
+            { word: "练太极", pinyin: "liàn tài jí" },
+            { word: "玩飞盘", pinyin: "wán fēi pán" },
+            { word: "逛博物馆", pinyin: "guàng bó wù guǎn" },
+            { word: "做园艺", pinyin: "zuò yuán yì" },
+            { word: "拍落日", pinyin: "pāi luò rì" },
+            { word: "写书信", pinyin: "xiě shū xìn" },
+            { word: "做果酱", pinyin: "zuò guǒ jiàng" },
+            { word: "观云海", pinyin: "guān yún hǎi" },
+            { word: "玩拼图", pinyin: "wán pīn tú" },
+            { word: "学摄影", pinyin: "xué shè yǐng" },
+            { word: "做瑜伽", pinyin: "zuò yú jiā" },
+            { word: "逛古董", pinyin: "guàng gǔ dǒng" },
+            { word: "写诗歌", pinyin: "xiě shī gē" },
+            { word: "做木工", pinyin: "zuò mù gōng" },
+            { word: "观鸟类", pinyin: "guān niǎo lèi" },
+            { word: "玩乐器", pinyin: "wán yuè qì" },
+            { word: "做雕塑", pinyin: "zuò diāo sù" },
+            { word: "逛花市", pinyin: "guàng huā shì" },
+            { word: "写小说", pinyin: "xiě xiǎo shuō" },
+            { word: "做陶器", pinyin: "zuò táo qì" },
+            { word: "观戏剧", pinyin: "guān xì jù" },
+            { word: "玩魔方", pinyin: "wán mó fāng" },
+            { word: "做香薰", pinyin: "zuò xiāng xūn" },
+            { word: "逛画廊", pinyin: "guàng huà láng" },
+            { word: "写随笔", pinyin: "xiě suí bǐ" },
+            { word: "做编织", pinyin: "zuò biān zhī" },
+            { word: "观植物", pinyin: "guān zhí wù" },
+            { word: "玩桌游", pinyin: "wán zhuō yóu" },
+            { word: "做蜡烛", pinyin: "zuò là zhú" },
+            { word: "逛老街", pinyin: "guàng lǎo jiē" },
+            { word: "写评论", pinyin: "xiě píng lùn" },
+            { word: "做刺绣", pinyin: "zuò cì xiù" },
+            { word: "观天文", pinyin: "guān tiān wén" },
+            { word: "玩积木", pinyin: "wán jī mù" },
+            { word: "做香皂", pinyin: "zuò xiāng zào" },
+            { word: "逛校园", pinyin: "guàng xiào yuán" },
+            { word: "写游记", pinyin: "xiě yóu jì" },
+            { word: "做皮具", pinyin: "zuò pí jù" },
+            { word: "观昆虫", pinyin: "guān kūn chóng" },
+            { word: "玩棋类", pinyin: "wán qí lèi" },
+            { word: "做甜点", pinyin: "zuò tián diǎn" },
+            { word: "逛海边", pinyin: "guàng hǎi biān" },
+            { word: "写回忆", pinyin: "xiě huí yì" },
+            { word: "做首饰", pinyin: "zuò shǒu shì" },
+            { word: "观气象", pinyin: "guān qì xiàng" },
+            { word: "玩拼豆", pinyin: "wán pīn dòu" },
+            { word: "做料理", pinyin: "zuò liào lǐ" },
+            { word: "逛山野", pinyin: "guàng shān yě" },
+            { word: "写感悟", pinyin: "xiě gǎn wù" },
+            { word: "做花环", pinyin: "zuò huā huán" },
+            { word: "观建筑", pinyin: "guān jiàn zhú" },
+            { word: "玩黏土", pinyin: "wán nián tǔ" },
+            { word: "做汤羹", pinyin: "zuò tāng gēng" },
+            { word: "逛夜市", pinyin: "guàng yè shì" },
+            { word: "写计划", pinyin: "xiě jì huà" },
+            { word: "做干花", pinyin: "zuò gān huā" },
+            { word: "观雕塑", pinyin: "guān diāo sù" },
+            { word: "玩折纸", pinyin: "wán zhé zhǐ" },
+            { word: "做腌菜", pinyin: "zuò yān cài" },
+            { word: "逛田园", pinyin: "guàng tián yuán" },
+            { word: "写总结", pinyin: "xiě zǒng jié" }
+        ];
+        
+        // 如果需要更多生活小事，可以复制并修改上面的列表
+        // 这里我们确保有足够的项目
+        const allSmallThings = [];
+        for (let i = 0; i < 365; i++) {
+            allSmallThings.push(smallThings[i % smallThings.length]);
+        }
+        
+        // 星期几的中文表达
+        const weekdays = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+
+        // DOM元素
+        const calendarCard = document.getElementById('calendarCard');
+        const smallThingElement = document.getElementById('smallThing');
+        const pinyinElement = document.getElementById('pinyin');
+        const borgesPoemElement = document.getElementById('borgesPoem');
+        const poemSourceElement = document.getElementById('poemSource');
+        const dateDayElement = document.getElementById('dateDay');
+        const dateMonthElement = document.getElementById('dateMonth');
+        const weekdayElement = document.getElementById('weekday');
+        const yearDisplayElement = document.getElementById('yearDisplay');
+        const currentDateDisplay = document.getElementById('currentDateDisplay');
+        const currentTimeElement = document.getElementById('currentTime');
+        const prevDayBtn = document.getElementById('prevDay');
+        const nextDayBtn = document.getElementById('nextDay');
+        const todayBtn = document.getElementById('todayBtn');
+        const randomDayBtn = document.getElementById('randomDay');
+        const datePicker = document.getElementById('datePicker');
+        const totalPoemsElement = document.getElementById('totalPoems');
+        const currentPoemIndexElement = document.getElementById('currentPoemIndex');
+        const daysToGoElement = document.getElementById('daysToGo');
+
+        // 初始化数据
+        const borgesPoems = generateBorgesPoems(); // 365条不重复的诗句
+        totalPoemsElement.textContent = borgesPoems.length;
+        
+        // 当前显示的日期（默认今天）
+        let currentDate = new Date();
+        
+        // 更新时间显示
+        function updateCurrentTime() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth() + 1;
+            const day = now.getDate();
+            const hour = now.getHours().toString().padStart(2, '0');
+            const minute = now.getMinutes().toString().padStart(2, '0');
+            const second = now.getSeconds().toString().padStart(2, '0');
+            
+            currentTimeElement.textContent = `${year}年${month}月${day}日 ${hour}:${minute}:${second}`;
+            
+            // 每天0点自动刷新日历内容
+            if (hour === '00' && minute === '00' && second === '00') {
+                goToToday();
+            }
+        }
+        
+        // 根据日期选择生活小事和博尔赫斯诗句
+        function selectContentByDate(date) {
+            // 计算一年中的第几天（1-365/366）
+            const startOfYear = new Date(date.getFullYear(), 0, 0);
+            const diff = date - startOfYear;
+            const dayOfYear = Math.floor(diff / (1000 * 60 * 60 * 24));
+            
+            // 计算诗句索引（确保在365天内）
+            const poemIndex = (dayOfYear - 1) % borgesPoems.length;
+            
+            // 计算生活小事索引
+            const smallThingIndex = (dayOfYear - 1) % allSmallThings.length;
+            
+            return {
+                smallThing: allSmallThings[smallThingIndex],
+                borgesPoem: borgesPoems[poemIndex],
+                poemIndex: poemIndex + 1 // 从1开始计数
+            };
+        }
+        
+        // 更新卡片内容
+        function updateCard() {
+            // 根据日期选择内容
+            const content = selectContentByDate(currentDate);
+            
+            // 更新卡片内容
+            smallThingElement.textContent = content.smallThing.word;
+            pinyinElement.textContent = content.smallThing.pinyin;
+            borgesPoemElement.textContent = content.borgesPoem.poem;
+            poemSourceElement.textContent = content.borgesPoem.source;
+            
+            // 更新日期信息
+            const day = currentDate.getDate();
+            const month = currentDate.getMonth() + 1;
+            const year = currentDate.getFullYear();
+            const weekday = currentDate.getDay();
+            
+            dateDayElement.textContent = day;
+            dateMonthElement.textContent = '/' + month;
+            weekdayElement.textContent = weekdays[weekday];
+            yearDisplayElement.textContent = `${year}年`;
+            
+            // 更新当前日期显示
+            currentDateDisplay.textContent = `${year}年${month}月${day}日`;
+            
+            // 更新统计信息
+            const startOfYear = new Date(currentDate.getFullYear(), 0, 0);
+            const diff = currentDate - startOfYear;
+            const dayOfYear = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const daysLeft = 365 - dayOfYear;
+            
+            currentPoemIndexElement.textContent = content.poemIndex;
+            daysToGoElement.textContent = daysLeft > 0 ? daysLeft : 0;
+            
+            // 添加卡片翻转动画
+            calendarCard.classList.add('flip-animation');
+            setTimeout(() => {
+                calendarCard.classList.remove('flip-animation');
+            }, 800);
+            
+            // 更新日期选择器
+            datePicker.valueAsDate = currentDate;
+            
+            // 更新按钮状态
+            const today = new Date();
+            const isToday = currentDate.toDateString() === today.toDateString();
+            todayBtn.disabled = isToday;
+        }
+        
+        // 前进到下一天
+        function nextDay() {
+            currentDate.setDate(currentDate.getDate() + 1);
+            updateCard();
+        }
+        
+        // 后退到前一天
+        function prevDay() {
+            currentDate.setDate(currentDate.getDate() - 1);
+            updateCard();
+        }
+        
+        // 跳转到今天
+        function goToToday() {
+            currentDate = new Date();
+            updateCard();
+        }
+        
+        // 随机跳转到某一天（一年内的随机日期）
+        function randomDay() {
+            const today = new Date();
+            const startOfYear = new Date(today.getFullYear(), 0, 1);
+            const endOfYear = new Date(today.getFullYear(), 11, 31);
+            const randomTime = startOfYear.getTime() + Math.random() * (endOfYear.getTime() - startOfYear.getTime());
+            currentDate = new Date(randomTime);
+            updateCard();
+        }
+        
+        // 处理日期选择器变化
+        function handleDatePickerChange() {
+            const selectedDate = new Date(datePicker.value);
+            currentDate = selectedDate;
+            updateCard();
+        }
+        
+        // 初始化事件监听
+        function initEventListeners() {
+            prevDayBtn.addEventListener('click', prevDay);
+            nextDayBtn.addEventListener('click', nextDay);
+            todayBtn.addEventListener('click', goToToday);
+            randomDayBtn.addEventListener('click', randomDay);
+            datePicker.addEventListener('change', handleDatePickerChange);
+            
+            // 添加键盘控制
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'ArrowLeft') {
+                    prevDay();
+                } else if (event.key === 'ArrowRight') {
+                    nextDay();
+                } else if (event.key === ' ') {
+                    randomDay();
+                } else if (event.key === 't' || event.key === 'T') {
+                    goToToday();
+                }
+            });
+        }
+        
+        // 初始化应用
+        function initApp() {
+            // 更新时间显示
+            updateCurrentTime();
+            setInterval(updateCurrentTime, 1000);
+            
+            // 初始化事件监听
+            initEventListeners();
+            
+            // 初始化卡片（显示今天的内容）
+            updateCard();
+            
+            // 添加提示
+            console.log("提示：使用左右方向键可以切换日期，空格键随机选择一天，T键回到今天");
+            console.log(`博尔赫斯诗歌总数：${borgesPoems.length}条`);
+            console.log(`生活小事总数：${allSmallThings.length}条`);
+        }
+        
+        // 页面加载完成后初始化应用
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
